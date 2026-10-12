@@ -44,9 +44,10 @@ supports Python 3.10–3.14 (the instrumentors require `<3.15`).
   `gpt-4.1-mini`, served through the OpenAI-compatible gateway the contract owner names.
   The model that was actually used is written to `MANIFEST.json`.
 
-The agent uses the SDK's Chat Completions model (`set_default_openai_api("chat_completions")`)
-instead of the Responses API, because the real run goes to an OpenAI-compatible gateway
-that may not serve `/responses`.
+The agent uses the SDK's Chat Completions model instead of the Responses API, because the
+real run goes to an OpenAI-compatible gateway that may not serve `/responses`. It builds
+the model explicitly as `OpenAIChatCompletionsModel(model=<id>, openai_client=AsyncOpenAI())`
+instead of passing the id as a string (see the note under *Running*).
 
 ## Running
 
@@ -64,6 +65,14 @@ first model call. The copy committed here comes from a recorded run.
 `make run-real` reads `OPENAI_API_KEY` and `OPENAI_BASE_URL` from the environment. These
 are the `openai` client's own variables, read by `AsyncOpenAI()`. If `OPENAI_BASE_URL` is
 unset, the client uses its default, `https://api.openai.com/v1`.
+
+`MODEL` accepts any id the gateway serves, including ids that contain `/`, such as
+`vendor/model-name`. The id is sent to the gateway unchanged. If the Agents SDK gets a
+model as a plain string, it reads the text before a `/` as a provider prefix and fails
+with `Unknown prefix: vendor`. The agent avoids this by building the model object itself,
+as described under *Model*. To check this, a recorded run was made with the stub's model
+name set to `vendor/model-name`. All 25 requests reached the stub with `"model":
+"vendor/model-name"`.
 
 ## Telemetry configuration
 

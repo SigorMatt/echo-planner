@@ -24,10 +24,9 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from agents import (
     Agent,
     ModelSettings,
+    OpenAIChatCompletionsModel,
     Runner,
     function_tool,
-    set_default_openai_api,
-    set_default_openai_client,
 )
 
 import stub_server
@@ -105,13 +104,13 @@ async def run(mode: str, model: str) -> None:
         client = AsyncOpenAI(base_url=stub_server.BASE_URL, api_key="stub-no-key")
     else:
         client = AsyncOpenAI()  # OPENAI_API_KEY / OPENAI_BASE_URL from the environment
-    set_default_openai_client(client)
-    set_default_openai_api("chat_completions")
 
+    # An explicit model object, so the id reaches the gateway unchanged: a plain string
+    # goes through the SDK's provider lookup, which reads "vendor/name" as a prefix.
     agent = Agent(
         name="echo-planner",
         instructions=INSTRUCTIONS,
-        model=model,
+        model=OpenAIChatCompletionsModel(model=model, openai_client=client),
         tools=[check_inventory, place_order],
         model_settings=ModelSettings(parallel_tool_calls=False),
     )
