@@ -1,0 +1,20 @@
+{
+  "contract_version": "1.2",
+  "framework": "openai-agents",
+  "framework_version": "0.23.1",
+  "instrumentation": [
+    "openinference-instrumentation-openai-agents==2.5.3",
+    "openinference-instrumentation-openai==0.1.65"
+  ],
+  "sdk": {
+    "opentelemetry-sdk": "1.45.1",
+    "exporter": "opentelemetry-exporter-otlp-proto-http==1.45.1"
+  },
+  "python": "3.12.3",
+  "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+  "model": "echo-planner-stub",
+  "base_url": "http://127.0.0.1:8765/v1/",
+  "mode": "recorded",
+  "endpoint": "http://localhost:4318",
+  "started_at": "2026-10-12T17:11:12.823Z"
+}
